@@ -2,8 +2,13 @@ let boxWidth = 50;
 let boxHeight = 50;
 let units = 'px';
 let r = null;
-let g = 180;
-let b = null;
+let g = 200;
+let b = [200,250];
+
+
+let randomInt = (min, max) => {
+  return min + Math.floor(Math.random() * (max-min));
+};
 
 /**
  * Generates a random hex color, if r,g or b is given, the value will be used.
@@ -13,25 +18,19 @@ let b = null;
  * @returns string containing the hex value of the generated color.
  */
 let generateRandomColor = (r, g, b) => {
-  r = Number.isInteger(r) ? r : null;
-  g = Number.isInteger(g) ? g : null;
-  b = Number.isInteger(b) ? b : null;
-
-  if (r && r < 0) r = Math.abs(r);
-  if (g && g < 0) g = Math.abs(g);
-  if (b && b < 0) b = Math.abs(b);
-
-  if (r && r > 255) r = 255;
-  if (g && g > 255) g = 255;
-  if (b && b > 255) b = 255;
-
-  r = r ?? Math.floor(Math.random() * 255);
-  g = g ?? Math.floor(Math.random() * 255);
-  b = b ?? Math.floor(Math.random() * 255);
-  let color = "#";
-  color = `${color}${r < 16 ? '0' : ''}${r.toString(16)}`;
-  color = `${color}${g < 16 ? '0' : ''}${g.toString(16)}`;
-  color = `${color}${b < 16 ? '0' : ''}${b.toString(16)}`;
+  let rgb = [r, g, b];
+  rgb.forEach((v,idx,arr) => {
+    v = Number.isInteger(arr[idx]) ?
+          arr[idx] :
+          Array.isArray(arr[idx]) && arr[idx].length == 2 ?
+            randomInt(arr[idx][0], arr[idx][1]) :
+            null;
+    v = v && v < 0 ? Math.abs(v) : v;
+    v = v && v > 255 ? 255 : v;
+    v = v ?? randomInt(0, 255);
+    arr[idx] = v < 16 ? `0${v.toString(16)}` : v.toString(16);
+  });
+  let color = `#${rgb[0]}${rgb[1]}${rgb[2]}`;
   return color;
 };
 
